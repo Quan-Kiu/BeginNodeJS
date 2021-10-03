@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Register PAGE</title>
+        <script
+            src="https://code.jquery.com/jquery-3.6.0.js"
+            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+            crossorigin="anonymous"
+        ></script>
+    </head>
+    <body>
+        <div class="container">
+            <label for="username"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="username" />
+
+            <label for="password"><b>Password</b></label>
+            <input
+                type="password"
+                placeholder="Enter Password"
+                name="password"
+            />
+
+            <button id="submit" type="submit">Register</button>
+        </div>
+
+        <script>
+            $('#submit').click(function () {
+                const username = $('input[name = username]').val();
+                const password = $('input[name = password]').val();
+
+                const data = { username, password };
+
+                $.ajax({
+                    url: '/auth/register',
+                    method: 'POST',
+                    data: data,
+                    success: function (data) {
+                        console.log('SUCCESS : ', data);
+                        setTimeout(() => {
+                            window.location.href = '/auth/login';
+                        }, 5000);
+                    },
+                    error: function (e) {
+                        console.log('ERROR : ', e);
+                    },
+                });
+            });
+        </script>
+    </body>
+</html>
