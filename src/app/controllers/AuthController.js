@@ -47,6 +47,15 @@ class AuthController {
     async loginUser(req, res) {
         try {
             const { email, password } = req.body;
+            if (!email.trim())
+                return res
+                    .status(403)
+                    .json({ message: 'Trường email không được để trống.' });
+
+            if (!password.trim())
+                return res
+                    .status(403)
+                    .json({ message: 'Trường password không được để trống.' });
 
             var user = await UserModel.findOne({ email });
 
