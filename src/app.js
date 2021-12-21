@@ -3,22 +3,25 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const port = process.env.MAIN_SEVER_PORT || 3000;
-const db = require('./app/config/db');
-const routes = require('./routes/');
 const cookieParser = require('cookie-parser');
 
+// Import external file
+const routes = require('./routes/');
+const db = require('./app/config/db');
+
+// Connect DB
+db.connect();
+
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Static public file
-
+// Static file
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Connect DB
-db.connect();
 // Router
 routes(app);
-// Start sever
 
+// Start sever
 app.listen(port, () => console.log(`Listening at port ${port}`));

@@ -5,6 +5,12 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Login PAGE</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
+        />
         <script
             src="https://code.jquery.com/jquery-3.6.0.js"
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
@@ -12,43 +18,71 @@
         ></script>
     </head>
     <body>
-        <div class="container">
-            <label for="username"><b>Username</b></label>
-            <input
-                type="text"
-                placeholder="Enter Username"
-                name="username"
-                required
-            />
-
-            <label for="password"><b>Password</b></label>
-            <input
-                type="password"
-                placeholder="Enter Password"
-                name="password"
-                required
-            />
-
-            <button id="submit" type="submit">Login</button>
+        <div
+            class="
+                container
+                d-flex
+                align-items-center
+                justify-content-center
+                flex-column
+            "
+            style="height: 100vh"
+        >
+            <h1 class="text-center">Page Login</h1>
+            <div class="mb-3 mt-5 row">
+                <label for="staticEmail" class="col-sm-2 col-form-label"
+                    >Email</label
+                >
+                <div class="col-sm-10">
+                    <input
+                        type="email"
+                        name="email"
+                        class="form-control"
+                        id="staticEmail"
+                        value="email"
+                        required
+                    />
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="inputPassword" class="col-sm-2 col-form-label"
+                    >Password</label
+                >
+                <div class="col-sm-10">
+                    <input
+                        name="password"
+                        required
+                        type="password"
+                        class="form-control"
+                        id="inputPassword"
+                    />
+                </div>
+            </div>
+            <h2 class="text-center error text-danger"></h2>
+            <button id="submit" class="btn btn-primary fw-bold" type="submit">
+                Login
+            </button>
         </div>
 
         <script src="/js/handleCookie.js"></script>
         <script>
+            $('input').focus(() => {
+                $('.error').text('');
+            });
             $('#submit').click(() => {
-                const username = $('input[name="username"]').val();
+                const email = $('input[name="email"]').val();
                 const password = $('input[name="password"]').val();
-                const data = { username, password };
+                const data = { email, password };
+                $('.error').text('');
                 $.ajax({
                     url: '/auth/login',
                     method: 'POST',
                     data: data,
                     success: function (data) {
-                        console.log('SUCCESS: ', data);
-                        setCookie('token', data.token, 30);
-                        window.location.href = '/user';
+                        window.location.href = '/';
                     },
                     error: function (error) {
-                        console.log('ERROR: ', error);
+                        $('.error').text(error.responseJSON.message);
                     },
                 });
             });

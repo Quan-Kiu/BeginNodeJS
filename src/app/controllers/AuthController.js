@@ -45,47 +45,29 @@ class AuthController {
     }
 
     async loginUser(req, res) {
-        const { username, password } = req.body;
+        try {
+            const { email, password } = req.body;
 
-        var user = await UserModel.findOne({ username });
+            var user = await UserModel.findOne({ email });
 
-        if (!user) {
-            return res
-                .status(403)
-                .json({ message: 'Wrong username or password' });
+            if (!user) {
+                return res
+                    .status(403)
+                    .json({ message: 'Tài khoản không tồn tại.' });
+            }
+
+            const isHashPassword = bcrypt.compareSync(password, user.password);
+
+            if (!isHashPassword) {
+                return res
+                    .status(403)
+                    .json({ message: 'Sai tài khoản hoặc mật khẩu.' });
+            }
+
+            res.json({ message: 'Đăng nhập thành công!' });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
-
-        const isHashPassword = bcrypt.compareSync(password, user.password);
-
-        if (!isHashPassword) {
-            return res
-                .status(403)
-                .json({ message: 'Wrong username or password' });
-        }
-
-        const accessToken = signToken(
-            user._id,
-            process.env.ACCESS_TOKEN_SECRET,
-            120
-        );
-
-        const refreshToken = signToken(
-            user._id,
-            process.env.REFRESH_TOKEN_SECRET,
-            120 * 60
-        );
-
-        if (!accessToken || !refreshToken) {
-            return res.status(500).json({ message: 'TOKEN is error' });
-        }
-
-        UserModel.findByIdAndUpdate(user._id, { refreshToken: refreshToken })
-            .then(() => {
-                return res.status(201).json({ token: accessToken });
-            })
-            .catch((err) => {
-                return res.status(500).json({ err });
-            });
     }
 }
 
